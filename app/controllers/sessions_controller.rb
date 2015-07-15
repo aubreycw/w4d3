@@ -7,22 +7,22 @@ class SessionsController < ApplicationController
   end
 
   def create
-    @user = current_user
+    @user = User.find_by_credentials(params[:session][:user_name],
+                                            params[:session][:password])
     if @user
       login_user!(@user)
       redirect_to cats_url
     else
-      flash.now[:errors] ||= []
-      flash.now[:errors] << "Invalid login credentials"
+      flash.now[:errors] = ["Invalid login credentials"]
       render :new
     end
   end
 
   def destroy
-    session[:session_token] = nil
     current_user.reset_session_token!
-    flash.now[:status] ||= []
-    flash.now[:status] << "Successful logout!"
+    session[:user_name] = nil
+    session[:password] = nil
+    flash.now[:status] = ["Successful logout!"]
     redirect_to cats_url
   end
 end

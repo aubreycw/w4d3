@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
   helper_method :current_user
 
   def current_user
-    User.find_by_credentials(session[:user_name], session[:password])
+    @current_user ||= User.find_by_session_token(session[:session_token])
   end
 
   def login_user!(user)
@@ -15,5 +15,13 @@ class ApplicationController < ActionController::Base
 
   def require_not_logged_in
     redirect_to cats_url unless current_user.nil?
+  end
+
+  def require_cat_owner
+    cat_owner = Cat.find(params[:id]).user
+    unless current_user && current_user.id == cat_owner.id
+      flash[:errors] = ["Not your cat!"]
+      redirect_to cats_url
+    end
   end
 end

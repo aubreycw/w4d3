@@ -5,6 +5,8 @@ class User < ActiveRecord::Base
   validates :user_name, :session_token, presence: true, uniqueness: true
   attr_reader :password
 
+  has_many :cats
+  has_many :cat_rental_requests
   def ensure_session_token
     self.session_token ||= SecureRandom::urlsafe_base64
   end
@@ -15,7 +17,6 @@ class User < ActiveRecord::Base
   end
 
   def reset_session_token!
-    session[:session_token] = nil
     self.session_token = SecureRandom::urlsafe_base64
     self.save
   end
@@ -31,5 +32,9 @@ class User < ActiveRecord::Base
     else
       nil
     end
+  end
+
+  def self.find_by_session_token(session_token)
+    User.find_by(session_token: session_token)
   end
 end

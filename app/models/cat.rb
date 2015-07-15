@@ -16,9 +16,10 @@ class Cat < ActiveRecord::Base
     :color,
     :name,
     :sex,
+    :user_id,
     presence: true
   )
-
+  belongs_to :user
   validates :color, inclusion: CAT_COLORS
   validates :sex, inclusion: %w(M F)
 

@@ -1,4 +1,6 @@
 class CatRentalRequestsController < ApplicationController
+  before_action :require_cat_owner, only: [:approve, :deny]
+  before_action :require_valid_requester, only: [:create]
   def approve
     current_cat_rental_request.approve!
     redirect_to cat_url(current_cat)
@@ -35,6 +37,13 @@ class CatRentalRequestsController < ApplicationController
 
   def cat_rental_request_params
     params.require(:cat_rental_request)
-      .permit(:cat_id, :end_date, :start_date, :status)
+      .permit(:cat_id, :end_date, :start_date, :status, :user_id)
+  end
+
+  def require_valid_requester
+    unless params[:cat_rental_request][:user_id].to_i == current_user.id
+        flash[:errors] = ["Can't request on behalf of others!"]
+        redirect_to cats_url
+    end
   end
 end
