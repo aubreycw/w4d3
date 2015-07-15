@@ -1,4 +1,6 @@
 class SessionsController < ApplicationController
+  before_action :require_not_logged_in, only:[:new]
+
   def new
     @user = User.new
     render :new
@@ -7,7 +9,7 @@ class SessionsController < ApplicationController
   def create
     @user = current_user
     if @user
-      session[:session_token] = @user.session_token
+      login_user!(@user)
       redirect_to cats_url
     else
       flash.now[:errors] ||= []
