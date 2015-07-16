@@ -11,6 +11,7 @@ gem 'turbolinks'
 gem 'uglifier', '>= 1.3.0'
 gem 'annotate'
 gem 'bcrypt', require: 'bcrypt'
+gem 'useragent'
 
 group :development do
   gem 'better_errors'

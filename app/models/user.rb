@@ -1,24 +1,16 @@
 
 
 class User < ActiveRecord::Base
-  validate :ensure_session_token
-  validates :user_name, :session_token, presence: true, uniqueness: true
+  validates :user_name, presence: true, uniqueness: true
   attr_reader :password
 
   has_many :cats
   has_many :cat_rental_requests
-  def ensure_session_token
-    self.session_token ||= SecureRandom::urlsafe_base64
-  end
+  has_many :sessions
 
   def password=(password)
     @password = password
     self.password_digest = BCrypt::Password.create(password)
-  end
-
-  def reset_session_token!
-    self.session_token = SecureRandom::urlsafe_base64
-    self.save
   end
 
   def is_password?(password)
@@ -32,9 +24,5 @@ class User < ActiveRecord::Base
     else
       nil
     end
-  end
-
-  def self.find_by_session_token(session_token)
-    User.find_by(session_token: session_token)
   end
 end

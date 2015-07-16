@@ -1,0 +1,9 @@
+<% if current_user.nil? %>
+        <%= "" %>
+<% else %>
+      <% current_user.sessions.each do |session| %>
+      <%= link_to("logout from #{session.name}", session_url(session.id), html_options = {:method => :delete}) %>
+      <%end%>
+<%end%>
+
+<%= current_user.nil? ? link_to("login here", new_session_url)  : current_user.user_name %>

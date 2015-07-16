@@ -7,10 +7,9 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
-  <%= render partial: "shared/errors" unless flash.empty?%>
+  <%= render partial: "shared/errors" unless flash.empty? %>
   <p>
-    <%= current_user.nil? ? "" : link_to("logout here", session_url(current_user.id), html_options = {:method => :delete}) %>
-    <%= current_user.nil? ? link_to("login here", new_session_url)  : current_user.user_name %>
+  <%=  render partial: "shared/display_session_info" %>
   </p>
 
 <%= yield %>

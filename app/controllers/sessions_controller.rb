@@ -19,9 +19,10 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    current_user.reset_session_token!
-    session[:user_name] = nil
-    session[:password] = nil
+    fail
+    @session = Session.find_by(id: params[:id])
+    @session.destroy
+    session[:session_token] = nil
     flash.now[:status] = ["Successful logout!"]
     redirect_to cats_url
   end

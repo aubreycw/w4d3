@@ -6,11 +6,15 @@ class ApplicationController < ActionController::Base
   helper_method :current_user
 
   def current_user
-    @current_user ||= User.find_by_session_token(session[:session_token])
+    @session = Session.find_by(session_token: session[:session_token])
+    return nil unless @session
+    @current_user ||= User.find(@session.user_id)
   end
 
   def login_user!(user)
-    session[:session_token] = user.session_token
+    user_agent = UserAgent.parse(request.env["HTTP_USER_AGENT"])
+    @session = Session.create!(user_id: user.id, name: user_agent.browser)
+    session[:session_token] = @session.session_token
   end
 
   def require_not_logged_in
